@@ -1,9 +1,9 @@
 import './App.css';
+import ThreeScene from './ThreeScene';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
+/* 
+
+<header className="App-header">
         <p>
           Welcome Mr. Marshall <br></br>
          Remidnder Edit <code>src/App.js</code> and save to reload.
@@ -17,6 +17,14 @@ function App() {
           Learn React
         </a>
       </header>
+
+*/
+
+function App() {
+  return (
+    <div className="App">
+       <ThreeScene />
+       
     </div>
   );
 }
