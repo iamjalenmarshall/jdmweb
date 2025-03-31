@@ -34,10 +34,10 @@ const ThreeScene = () => {
 
     //Moons / Links Rotating
     const moons =[];
-    const moonCount = 3;
+    const moonCount = 4;
 
     for(let i = 0; i < moonCount; i++){
-        const moonGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+        const moonGeometry = new THREE.SphereGeometry(0.5, 16, 8);
         const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
         const moon = new THREE.Mesh(moonGeometry, moonMaterial);
         scene.add(moon)
@@ -47,7 +47,7 @@ const ThreeScene = () => {
             mesh: moon,
             angle: (i / moonCount) * Math.PI * 2,
             radius: 2 + i * 0.5, // each moon a bit further out
-            speed: 0.01 + i * 0.005 // optional variation
+            speed: 0.001 // optional variation -> + i * 0.005 
         });
     }
 
@@ -65,9 +65,10 @@ const ThreeScene = () => {
         moon.angle += moon.speed;
 
         // Update position on XZ plane (unit circle behavior)
-        moon.mesh.position.y = moon.radius * Math.cos(moon.angle);
-        moon.mesh.position.z = moon.radius * Math.sin(moon.angle);
-        moon.mesh.position.x = 0;
+        moon.mesh.position.x = moon.radius * Math.cos(moon.angle);
+        moon.mesh.position.y = moon.radius * Math.sin(moon.angle);
+        moon.mesh.position.z = 0;
+        
       });
     };
 
