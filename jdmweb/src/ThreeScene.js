@@ -1,5 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { metalness } from 'three/tsl';
+
+
+function createRoundedSquare(width, height, radius) {
+  const shape = new THREE.Shape();
+
+  shape.moveTo(radius, 0);
+  shape.lineTo(width - radius, 0);
+  shape.quadraticCurveTo(width, 0, width, radius);
+  shape.lineTo(width, height - radius);
+  shape.quadraticCurveTo(width, height, width - radius, height);
+  shape.lineTo(radius, height);
+  shape.quadraticCurveTo(0, height, 0, height - radius);
+  shape.lineTo(0, radius);
+  shape.quadraticCurveTo(0, 0, radius, 0);
+
+  return shape;
+}
 
 const ThreeScene = () => {
   const mountRef = useRef(null);
@@ -25,9 +43,7 @@ const ThreeScene = () => {
 
     // Earth
     const geometry = new THREE.SphereGeometry(1,32,32);
-
-    // Image from https://planetpixelemporium.com/earth.html
-    const texture = new THREE.TextureLoader().load('/earthmap1k.jpg');
+    const texture = new THREE.TextureLoader().load('/earthmap1k.jpg');     // Image from https://planetpixelemporium.com/earth.html
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
@@ -36,11 +52,29 @@ const ThreeScene = () => {
     const moons =[];
     const moonCount = 4;
 
+
+    //TODO !! Fix Moon sizes
     for(let i = 0; i < moonCount; i++){
-        const moonGeometry = new THREE.SphereGeometry(0.5, 16, 8);
-        const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
-        const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-        scene.add(moon)
+
+      const roundedSquare = createRoundedSquare(1, 1, 0.2);
+      const moonGeometry = new THREE.ExtrudeGeometry(roundedSquare, {
+        depth: 0.01,
+        bevelEnabled: true,
+        bevelThickness: 0.02, // super thin
+        bevelSize: 0.02,
+        bevelSegments: 2
+      });
+
+
+      const moonMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0xffcc00,
+        roughness: 0.5,
+        metalness: 0.5
+      });
+
+      const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+      moon.geometry.center(); // Important to center it
+      scene.add(moon)
 
         // Set initial angle (equally spaced)
         moons.push({
