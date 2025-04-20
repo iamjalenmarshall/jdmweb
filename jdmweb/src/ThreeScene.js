@@ -149,11 +149,43 @@ const ThreeScene = () => {
     // Cleanup on unmount
     return () => {
       window.removeEventListener('click', handleMouseClick);
-      mountRef.current.removeChild(renderer.domElement);
+      if (renderer) {
+        renderer.dispose(); // Memory cleanup only, no removeChild()
+      }
     };
   }, []);
   
-  return <div ref={mountRef}></div>;
+  return (
+    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+      {/* WebGL Canvas */}
+      <div ref={mountRef} style={{ width: '100%', height: '100%' }}></div>
+
+      {/* Floating HTML Text */}
+      <div style={{
+        position: 'absolute',
+        top: '5%',
+        right: '10%',
+        color: 'white',
+        fontSize: '84px',
+        fontFamily: 'Arial, sans-serif',
+        pointerEvents: 'none'
+      }}>
+       JDM WEB
+      </div>
+      
+      <div style={{
+        position: 'absolute',
+        top: '12%',
+        left: '5%',
+        color: 'white',
+        fontSize: '20px',
+        fontFamily: 'Arial, sans-serif',
+        pointerEvents: 'none'
+      }}>
+       
+      </div>
+    </div>
+  );
 };
 
 export default ThreeScene;
