@@ -27,7 +27,8 @@ const ThreeScene = () => {
 
     // ----- Scene Set Up -----
     const scene = new THREE.Scene();
-
+    let animationFrameId;
+    
     // Camera of website
     const camera = new THREE.PerspectiveCamera(
       110,
@@ -53,7 +54,7 @@ const ThreeScene = () => {
     const Icons =[];
     const IconCount = 4;
     const appIcons = [
-      'Instagram_Icon1.png',
+      'Instagram_Icon1.png', //https://icon-icons.com/icon/social-media-circled-network-instagram/79487
       'App_Icon2.png',
       'App_Icon3_3.png',
       'App_Icon4.png',
@@ -141,7 +142,7 @@ const ThreeScene = () => {
       });
 
       renderer.render(scene, camera);
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     };
 
     animate();
@@ -151,6 +152,9 @@ const ThreeScene = () => {
       window.removeEventListener('click', handleMouseClick);
       if (renderer) {
         renderer.dispose(); // Memory cleanup only, no removeChild()
+      }
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId); // <--- Cancel old animation loop!
       }
     };
   }, []);
