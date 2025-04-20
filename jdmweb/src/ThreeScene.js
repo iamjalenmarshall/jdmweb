@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { metalness } from 'three/tsl';
 
 // App Icon Shape (Look to clean up position)
 function createRoundedSquare(width, height, radius) {
@@ -22,6 +21,8 @@ function createRoundedSquare(width, height, radius) {
 const ThreeScene = () => {
   const mountRef = useRef(null);
 
+
+  
   useEffect(() => {
 
     // ----- Scene Set Up -----
@@ -49,8 +50,8 @@ const ThreeScene = () => {
     scene.add(sphere);
 
     // ----- Moons / Link Icons -----
-    const moons =[];
-    const moonCount = 4;
+    const Icons =[];
+    const IconCount = 4;
     const appIcons = [
       'Instagram_Icon1.png',
       'App_Icon2.png',
@@ -63,7 +64,7 @@ const ThreeScene = () => {
     const mouse = new THREE.Vector2();
 
     //TODO !! Fix Moon sizes (WIP 04/19)
-    for(let i = 0; i < moonCount; i++){
+    for(let i = 0; i < IconCount; i++){
       const IconTexture = new THREE.TextureLoader().load(appIcons[i]);
       const roundedSquare = createRoundedSquare(1, 1, 0.2);
       const moonGeometry = new THREE.ExtrudeGeometry(roundedSquare, {
@@ -81,14 +82,14 @@ const ThreeScene = () => {
         metalness: 0.5
       });
 
-      const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-      moon.geometry.center(); // Important to center it
-      scene.add(moon)
+      const Icon = new THREE.Mesh(moonGeometry, moonMaterial);
+      Icon.geometry.center(); // Important to center it
+      scene.add(Icon)
 
         // Set angle (equally spaced)
-        moons.push({
-            mesh: moon,
-            angle: (i / moonCount) * Math.PI * 2,
+        Icons.push({
+            mesh: Icon,
+            angle: (i / IconCount) * Math.PI * 2,
             radius: 2.25, // Orbit Controller!
             speed: 0.002
         });
@@ -102,21 +103,21 @@ const ThreeScene = () => {
       // Cast the ray
       raycaster.setFromCamera(mouse, camera);
 
-      const moonMeshes = moons.map(moon => moon.mesh);
-      const intersects = raycaster.intersectObjects(moonMeshes);
+      const IconMeshes = Icons.map(Icon => Icon.mesh);
+      const intersects = raycaster.intersectObjects(IconMeshes);
 
       if (intersects.length > 0) {
-          const clickedMoon = intersects[0].object;
-          const moonIndex = moons.findIndex(moon => moon.mesh === clickedMoon);
+          const clickedIcon = intersects[0].object;
+          const IconIndex = Icons.findIndex(Icon => Icon.mesh === clickedIcon);
 
-          if (moonIndex !== -1) {
+          if (IconIndex !== -1) {
               const links = [
                 'https://www.instagram.com/jlnmrshll/',
                 'https://github.com/iamjalenmarshall',
                 'https://www.youtube.com/@jlnmrshll',
                 'https://www.tiktok.com/@jlnmrshll'
               ];
-              window.open(links[moonIndex], '_blank');
+              window.open(links[IconIndex], '_blank');
           }
       }
   };
@@ -129,13 +130,13 @@ const ThreeScene = () => {
         sphere.rotation.y += 0.01;
 
       //Moon / App Rotations 
-      moons.forEach(moon => {
-        moon.angle += moon.speed;
+      Icons.forEach(Icon => {
+        Icon.angle += Icon.speed;
 
         // Update position on XZ plane (unit circle behavior)
-        moon.mesh.position.x = moon.radius * Math.cos(moon.angle);
-        moon.mesh.position.y = moon.radius * Math.sin(moon.angle);
-        moon.mesh.position.z = 0;
+        Icon.mesh.position.x = Icon.radius * Math.cos(Icon.angle);
+        Icon.mesh.position.y = Icon.radius * Math.sin(Icon.angle);
+        Icon.mesh.position.z = 0;
         
       });
 
@@ -148,11 +149,43 @@ const ThreeScene = () => {
     // Cleanup on unmount
     return () => {
       window.removeEventListener('click', handleMouseClick);
-      mountRef.current.removeChild(renderer.domElement);
+      if (renderer) {
+        renderer.dispose(); // Memory cleanup only, no removeChild()
+      }
     };
   }, []);
+  
+  return (
+    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+      {/* WebGL Canvas */}
+      <div ref={mountRef} style={{ width: '100%', height: '100%' }}></div>
 
-  return <div ref={mountRef}></div>;
+      {/* Floating HTML Text */}
+      <div style={{
+        position: 'absolute',
+        top: '5%',
+        right: '10%',
+        color: 'white',
+        fontSize: '84px',
+        fontFamily: 'Arial, sans-serif',
+        pointerEvents: 'none'
+      }}>
+       JDM WEB
+      </div>
+      
+      <div style={{
+        position: 'absolute',
+        top: '12%',
+        left: '5%',
+        color: 'white',
+        fontSize: '20px',
+        fontFamily: 'Arial, sans-serif',
+        pointerEvents: 'none'
+      }}>
+       
+      </div>
+    </div>
+  );
 };
 
 export default ThreeScene;
