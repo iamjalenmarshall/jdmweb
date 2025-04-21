@@ -21,14 +21,12 @@ function createRoundedSquare(width, height, radius) {
 const ThreeScene = () => {
   const mountRef = useRef(null);
 
-
-  
   useEffect(() => {
 
     // ----- Scene Set Up -----
     const scene = new THREE.Scene();
     let animationFrameId;
-    
+
     // Camera of website
     const camera = new THREE.PerspectiveCamera(
       110,
@@ -49,6 +47,39 @@ const ThreeScene = () => {
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
+
+    // ----- Stars -----
+    const stars = []; // Store all star meshes
+    const starGroup = new THREE.Group(); // Create a star group
+    function addStars() {
+      for (let i = 0; i < 300; i++) {  // Make it dense!
+        const starGeometry = new THREE.SphereGeometry(0.05, 24, 24); // Tiny star
+        const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // White color
+        const star = new THREE.Mesh(starGeometry, starMaterial);
+    
+        star.position.x = (Math.random() - 0.5) * 200; // Wide spread
+        star.position.y = (Math.random() - 0.5) * 200;
+        star.position.z = (Math.random() - 0.5) * 200;
+    
+        stars.push(star);
+        scene.add(star);
+      }
+      scene.add(starGroup);
+    }
+    addStars();
+
+    const nebulaTexture = new THREE.TextureLoader().load('/nebula.png');
+
+    const nebulaGeometry = new THREE.SphereGeometry(90, 64, 64); // HUGE sphere
+    const nebulaMaterial = new THREE.MeshBasicMaterial({
+      map: nebulaTexture,
+      side: THREE.BackSide,  // <--- Flip it inside out
+      transparent: true,
+      opacity: 0.5
+    });
+
+  const nebulaMesh = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
+  scene.add(nebulaMesh);
 
     // ----- Moons / Link Icons -----
     const Icons =[];
@@ -127,9 +158,10 @@ const ThreeScene = () => {
 
     // Animation
     const animate = () => {
-        sphere.rotation.x += 0.0001;
-        sphere.rotation.y += 0.01;
+      sphere.rotation.x += 0.0001;
+      sphere.rotation.y += 0.01;
 
+      nebulaMesh.rotation.y += 500; // Rotate nebula EVEN slower
       //Moon / App Rotations 
       Icons.forEach(Icon => {
         Icon.angle += Icon.speed;
@@ -139,6 +171,12 @@ const ThreeScene = () => {
         Icon.mesh.position.y = Icon.radius * Math.sin(Icon.angle);
         Icon.mesh.position.z = 0;
         
+      });
+
+      stars.forEach(star => {
+        star.position.x += (Math.random() - 0.5) * 0.001; // Tiny random movement
+        star.position.y += (Math.random() - 0.5) * 0.001;
+        star.position.z += (Math.random() - 0.5) * 0.001;
       });
 
       renderer.render(scene, camera);
@@ -179,14 +217,14 @@ const ThreeScene = () => {
       
       <div style={{
         position: 'absolute',
-        top: '12%',
-        left: '5%',
+        top: '13%',
+        right: '17.75%',
         color: 'white',
         fontSize: '20px',
         fontFamily: 'Arial, sans-serif',
         pointerEvents: 'none'
       }}>
-       
+       1.0
       </div>
     </div>
   );
