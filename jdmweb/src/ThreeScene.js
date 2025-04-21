@@ -51,6 +51,7 @@ const ThreeScene = () => {
     // ----- Stars -----
     const stars = []; // Store all star meshes
     const starGroup = new THREE.Group(); // Create a star group
+    const starVelocities = [];
     function addStars() {
       for (let i = 0; i < 300; i++) {  // Make it dense!
         const starGeometry = new THREE.SphereGeometry(0.05, 24, 24); // Tiny star
@@ -63,6 +64,11 @@ const ThreeScene = () => {
     
         stars.push(star);
         scene.add(star);
+        starVelocities.push({
+          x: (Math.random() - 0.5) * 0.001,
+          y: (Math.random() - 0.5) * 0.001,
+          z: (Math.random() - 0.5) * 0.001
+        });
       }
       scene.add(starGroup);
     }
@@ -179,6 +185,13 @@ const ThreeScene = () => {
         star.position.z += (Math.random() - 0.5) * 0.001;
       });
 
+      stars.forEach((star, index) => {
+        const velocity = starVelocities[index];
+        star.position.x += velocity.x;
+        star.position.y += velocity.y;
+        star.position.z += velocity.z;
+      });
+
       renderer.render(scene, camera);
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -218,13 +231,13 @@ const ThreeScene = () => {
       <div style={{
         position: 'absolute',
         top: '13%',
-        right: '17.75%',
+        right: '17.325%',
         color: 'white',
         fontSize: '20px',
         fontFamily: 'Arial, sans-serif',
         pointerEvents: 'none'
       }}>
-       1.0
+       1.1.0
       </div>
     </div>
   );
