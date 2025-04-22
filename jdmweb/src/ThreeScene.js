@@ -18,6 +18,7 @@ function createRoundedSquare(width, height, radius) {
   return shape;
 }
 
+// ----- Beginning of Scene ----- 
 const ThreeScene = () => {
   const mountRef = useRef(null);
 
@@ -53,7 +54,7 @@ const ThreeScene = () => {
     const starGroup = new THREE.Group(); // Create a star group
     const starVelocities = [];
     function addStars() {
-      for (let i = 0; i < 300; i++) {  // Make it dense!
+      for (let i = 0; i < 500; i++) {  // Make it dense!
         const starGeometry = new THREE.SphereGeometry(0.05, 24, 24); // Tiny star
         const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // White color
         const star = new THREE.Mesh(starGeometry, starMaterial);
@@ -165,9 +166,9 @@ const ThreeScene = () => {
     // Animation
     const animate = () => {
       sphere.rotation.x += 0.0001;
-      sphere.rotation.y += 0.01;
+      sphere.rotation.y += 0.001;
 
-      nebulaMesh.rotation.y += 500; // Rotate nebula EVEN slower
+      nebulaMesh.rotation.y += 0.005; // Rotate nebula EVEN slower
       //Moon / App Rotations 
       Icons.forEach(Icon => {
         Icon.angle += Icon.speed;
